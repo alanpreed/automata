@@ -31,16 +31,9 @@ void code_table_add(code_table_t *table, code_t code)
 {
   if(table->table_len < MAX_NUM_CODES - 1)
   {
-    printf("Adding code to table: row %u, code: ", table->table_len);
-    for(size_t i = 0; i < code.code_len; i++)
-    {
-      printf("%u, ", code.code[i]);
-    }
-    printf("\r\n");
-
     table->data[table->table_len] = code;
-    table->table_len += 1;
     table->code_bitlength = bitsize(table->table_len);
+    table->table_len += 1;
   }
   else
   {

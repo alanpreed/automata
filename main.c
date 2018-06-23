@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
   printf("Final output code stream: ");
   for(size_t i = 0; i < output_length; i++)
   {
-    printf("%u, ", output[i]);
+    printf("%x, ", output[i]);
   }
   printf("\r\n");
 }

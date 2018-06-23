@@ -5,22 +5,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, uint16_t *output_position, uint8_t *bit_position);
+
 uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uint8_t num_values)
 {
   code_table_t code_table;
   code_t input_buffer;
-
-  size_t output_len = 100;
-
-  //uint8_t *output_codes = calloc(output_len, sizeof(uint8_t));
-  uint8_t output_position = 0;
-  uint8_t next_output_code = 0;
+  uint16_t output_position = 0;
+  uint16_t next_output_code = 0;
+  uint8_t output_bit_pos = 0;
 
   code_table_setup(&code_table, num_values);
 
   // Start with clear code:
-  output[0] = code_table.cc_index;
-  output_position++;
+  add_output_code(code_table.cc_index, code_table.code_bitlength, output, &output_position, &output_bit_pos);
 
   for(int i = 0; i < length; i++)
   {
@@ -57,23 +55,47 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
     // If no match found, add to code table and output code for buffer excluding this character
     if(!code_match)
     {
+      add_output_code(next_output_code, code_table.code_bitlength, output, &output_position, &output_bit_pos);
       code_table_add(&code_table, input_buffer);
       input_buffer = (code_t){0};
-      output[output_position] = next_output_code;
-      output_position++;
       // Last character isn't included in output code, so we need to go over it again
       i--;
     }
     // If match was found, return its code if there are no more bytes. Otherwise continue reading
     if(i == length - 1)
     {
-      output[output_position] = next_output_code;
-      output_position++;
+      add_output_code(next_output_code, code_table.code_bitlength, output, &output_position, &output_bit_pos);
     }
   }
   // Add end-of-info code when we're out of bytes
-  output[output_position] = code_table.eoi_index;
-  output_position++;
+  add_output_code(next_output_code, code_table.code_bitlength, output, &output_position, &output_bit_pos);
 
   return output_position;
+}
+
+static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, uint16_t *output_position, uint8_t *bit_position)
+{
+  while(bitlength != 0)
+  {
+    // Fit what we can in the current output byte
+    output[*output_position] |= code << *bit_position;
+
+    if(*bit_position + bitlength < 8)
+    {
+      // If everything fitted then there's nothing more to do
+      (*bit_position) += bitlength;
+      bitlength = 0;
+    }
+    else
+    {
+      uint8_t bits_fitted = 8 - (*bit_position);
+
+      // If there's stuff left over, move to the next byte and update positions
+      (*output_position)++;
+      
+      *bit_position = 0;
+      code >>= bits_fitted;
+      bitlength -= bits_fitted;
+    }
+  }
 }
