@@ -1,6 +1,7 @@
 #include "gifgen.h"
 #include <stdio.h>
 #include <stdbool.h>
+// http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
 
 static bool started = false;
 FILE *gif_file = NULL;

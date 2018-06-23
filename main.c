@@ -38,5 +38,14 @@ int main(int argc, char *argv[])
                                         2,2,2,2,2,1,1,1,1,1,
                                       };
 
-  lzw_compress_data(input_colour_indices, sizeof(input_colour_indices)/sizeof(input_colour_indices[0]), 4);
+  uint8_t output[100];
+
+  uint16_t output_length = lzw_compress_data(input_colour_indices, output, sizeof(input_colour_indices)/sizeof(input_colour_indices[0]), 4);
+
+  printf("Final output code stream: ");
+  for(size_t i = 0; i < output_length; i++)
+  {
+    printf("%u, ", output[i]);
+  }
+  printf("\r\n");
 }
