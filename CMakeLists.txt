@@ -4,4 +4,6 @@ add_executable(
   automata
   main.c
   grid.c
+  lzw.c
+  gifgen.c
 )
