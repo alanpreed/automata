@@ -7,10 +7,12 @@
 
 static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, uint16_t *output_position, uint8_t *bit_position);
 
+static void print_bits(uint8_t byte, uint8_t bitlength);
+
 uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uint8_t num_values)
 {
   code_table_t code_table;
-  code_t input_buffer;
+  code_t input_buffer = (code_t){0};
   uint16_t output_position = 0;
   uint16_t next_output_code = 0;
   uint8_t output_bit_pos = 0;
@@ -68,7 +70,13 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
     }
   }
   // Add end-of-info code when we're out of bytes
-  add_output_code(next_output_code, code_table.code_bitlength, output, &output_position, &output_bit_pos);
+  add_output_code(code_table.eoi_index, code_table.code_bitlength, output, &output_position, &output_bit_pos);
+
+  // Include any half-filled bytes in the output
+  if(output_bit_pos != 0)
+  {
+    output_position++;
+  }
 
   return output_position;
 }
@@ -97,5 +105,14 @@ static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, ui
       code >>= bits_fitted;
       bitlength -= bits_fitted;
     }
+  }
+}
+
+static void print_bits(uint8_t byte, uint8_t bitlength)
+{
+  for (int i = bitlength - 1; i >= 0; i--)
+  {
+      uint8_t bit = (byte >> i) & 1;
+      printf("%u", bit);
   }
 }

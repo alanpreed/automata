@@ -19,13 +19,9 @@ int main(int argc, char *argv[])
   //   grid_print(&test_grid);
   // }
 
-  // char filename[10] = "test.gif";
-  // gifgen_start(filename, 5, 5);
-
-  // gifgen_finish();
-
-  // grid_free(&test_grid);
-
+  char filename[10] = "test3.gif";
+  
+  
   uint8_t input_colour_indices[100] = { 1,1,1,1,1,2,2,2,2,2,
                                         1,1,1,1,1,2,2,2,2,2,
                                         1,1,1,1,1,2,2,2,2,2,
@@ -38,14 +34,12 @@ int main(int argc, char *argv[])
                                         2,2,2,2,2,1,1,1,1,1,
                                       };
 
-  uint8_t output[100];
+  gifgen_start(filename, 10, 10);
 
-  uint16_t output_length = lzw_compress_data(input_colour_indices, output, sizeof(input_colour_indices)/sizeof(input_colour_indices[0]), 4);
+  gifgen_add_frame(input_colour_indices, 10, 10);
 
-  printf("Final output code stream: ");
-  for(size_t i = 0; i < output_length; i++)
-  {
-    printf("%x, ", output[i]);
-  }
-  printf("\r\n");
+  gifgen_finish();
+
+  grid_free(&test_grid);
+
 }
