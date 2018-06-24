@@ -7,7 +7,6 @@
 
 static bool started = false;
 FILE *gif_file = NULL;
-uint8_t bin = 0b11111111;
 
 static void lzw_compress_image(grid_t *frame, uint8_t num_colours);
 
@@ -46,7 +45,6 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height) //grid_t *
                                     0x00};
 
     uint8_t *output = calloc(100, sizeof(uint8_t));
-
     uint16_t output_length = lzw_compress_data(data, output, width * height, 4);
 
     printf("Final output code stream: ");
@@ -56,24 +54,22 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height) //grid_t *
     }
     printf("\r\n");
 
-    //image descriptor
+    // Image descriptor
     fwrite(image_descriptor, sizeof(uint8_t), 10, gif_file);
 
-
-    //LZW minimum code size
+    // LZW minimum code size
     fputc(0x02, gif_file);
 
     // Data block size
     fputc((uint8_t)output_length, gif_file);
 
     // LZW data
-    for(size_t i = 0; i < output_length; i++)
-    {
-      fputc(output[i], gif_file);
-    }
+    fwrite(output, sizeof(uint8_t), output_length, gif_file);
 
     // Block terminator
     fputc(0x00, gif_file);
+
+    free(output);
   }
   else
   {

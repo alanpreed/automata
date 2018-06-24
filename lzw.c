@@ -1,9 +1,9 @@
-#include "lzw.h"
-#include "code_table.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "lzw.h"
+#include "code_table.h"
 
 static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, uint16_t *output_position, uint8_t *bit_position);
 
@@ -12,12 +12,14 @@ static void print_bits(uint8_t byte, uint8_t bitlength);
 uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uint8_t num_values)
 {
   code_table_t code_table;
-  code_t input_buffer = (code_t){0};
+  code_t input_buffer;
   uint16_t output_position = 0;
   uint16_t next_output_code = 0;
   uint8_t output_bit_pos = 0;
 
   code_table_setup(&code_table, num_values);
+  code_alloc(&input_buffer, MAX_CODE_LEN);
+  input_buffer.code_len = 0;
 
   // Start with clear code:
   add_output_code(code_table.cc_index, code_table.code_bitlength, output, &output_position, &output_bit_pos);
@@ -32,15 +34,15 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
     // Check each entry in code table to see if it matches input buffer
     for(int j = 0; j < code_table.table_len; j++)
     {
-      code_t test_code = code_table.data[j];
+      code_t *test_code = &(code_table.data[j]);
 
       // Only check for a match if the code is the same length as the input buffer
-      if(test_code.code_len == input_buffer.code_len)
+      if(test_code->code_len == input_buffer.code_len)
       {
         code_match = true;
         for(size_t k = 0; k < input_buffer.code_len; k++)
         {
-          if(test_code.code[k] != input_buffer.code[k])
+          if(test_code->code[k] != input_buffer.code[k])
           {
             code_match = false;
             break;
@@ -58,8 +60,8 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
     if(!code_match)
     {
       add_output_code(next_output_code, code_table.code_bitlength, output, &output_position, &output_bit_pos);
-      code_table_add(&code_table, input_buffer);
-      input_buffer = (code_t){0};
+      code_table_add(&code_table, &input_buffer);
+      input_buffer.code_len = 0;
       // Last character isn't included in output code, so we need to go over it again
       i--;
     }
@@ -77,7 +79,7 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
   {
     output_position++;
   }
-
+  code_table_free(&code_table);
   return output_position;
 }
 

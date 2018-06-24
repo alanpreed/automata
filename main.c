@@ -2,6 +2,7 @@
 #include "grid.h"
 #include "gifgen.h"
 #include "lzw.h"
+#include "colour.h"
 
 grid_t test_grid;
 
@@ -19,8 +20,7 @@ int main(int argc, char *argv[])
   //   grid_print(&test_grid);
   // }
 
-  char filename[10] = "test3.gif";
-  
+  char filename[15] = "test.gif";
   
   uint8_t input_colour_indices[100] = { 1,1,1,1,1,2,2,2,2,2,
                                         1,1,1,1,1,2,2,2,2,2,

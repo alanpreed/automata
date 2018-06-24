@@ -5,12 +5,12 @@
 
 // TODO: support long codes for large files - should go up to 4096
 // TODO: support running out of codes (using cc to regen table)
-#define MAX_CODE_LEN 100
-#define MAX_NUM_CODES 100
+#define MAX_CODE_LEN 4096
+#define MAX_NUM_CODES 4096
 
 typedef struct {
   uint16_t code_len;
-  uint8_t code[MAX_CODE_LEN];
+  uint8_t *code;
 } code_t;
 
 typedef struct{
@@ -26,6 +26,12 @@ typedef struct{
 
 void code_table_setup(code_table_t *table, uint8_t num_codes);
 
-void code_table_add(code_table_t *table, code_t code);
+void code_table_add(code_table_t *table, code_t *code);
+
+void code_table_free(code_table_t *table);
+
+void code_alloc(code_t *code, uint16_t length);
+
+void code_free(code_t *code);
 
 #endif
