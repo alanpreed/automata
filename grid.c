@@ -27,6 +27,17 @@ void grid_print(grid_t *grid)
   printf("\r\n");
 }
 
+void grid_convert(grid_t *grid, uint8_t *raw)
+{
+  for(size_t j = 0; j < grid->height; j++)
+  {
+    for(size_t i = 0; i < grid->width; i++)
+    {
+      raw[i + (j * grid->width)] = (uint8_t)grid->data[i][j];
+    }
+  }
+}
+
 void grid_free(grid_t *grid)
 {
   for(size_t i = 0; i < grid->height; i++)

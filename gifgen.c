@@ -83,4 +83,3 @@ void gifgen_finish(void)
   fclose(gif_file);
   started = false;
 }
-
