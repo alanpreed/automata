@@ -4,7 +4,7 @@ add_executable(
   automata
   main.c
   grid.c
-  code_table.c
-  lzw.c  
-  gifgen.c
+  gifgen/code_table.c
+  gifgen/lzw.c  
+  gifgen/gifgen.c
 )

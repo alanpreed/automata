@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "grid.h"
-#include "gifgen.h"
-#include "lzw.h"
-#include "colour.h"
+#include "gifgen/gifgen.h"
 
 grid_t test_grid;
 

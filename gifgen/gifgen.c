@@ -1,14 +1,12 @@
-#include "gifgen.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include "lzw.h"
+#include "gifgen.h"
 // http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
 
 static bool started = false;
 FILE *gif_file = NULL;
-
-static void lzw_compress_image(grid_t *frame, uint8_t num_colours);
 
 void gifgen_start(char *filename, uint16_t width, uint16_t height)
 {
