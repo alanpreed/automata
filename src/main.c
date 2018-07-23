@@ -65,4 +65,6 @@ int main(int argc, char *argv[])
 
   grid_free(&test_grid);
 
+  printf("Built\r\n");
+
 }
