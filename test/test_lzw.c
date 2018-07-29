@@ -36,7 +36,7 @@ uint8_t *output_received;
 int setup(void **state)
 {
   output_received = calloc(LZW_INPUT_SIZE, sizeof(uint8_t));
-  return 0;
+  return output_received == NULL;
 }
 
 int teardown(void **state)

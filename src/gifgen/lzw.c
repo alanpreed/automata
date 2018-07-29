@@ -5,7 +5,8 @@
 #include "lzw.h"
 #include "code_table.h"
 
-static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, uint16_t *output_position, uint8_t *bit_position);
+static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output,
+                             uint16_t *output_position, uint8_t *bit_position);
 
 static void print_bits(uint8_t byte, uint8_t bitlength);
 
@@ -83,7 +84,8 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
   return output_position;
 }
 
-static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, uint16_t *output_position, uint8_t *bit_position)
+static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output, 
+                            uint16_t *output_position, uint8_t *bit_position)
 {
   while(bitlength != 0)
   {

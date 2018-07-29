@@ -8,7 +8,7 @@
 static bool started = false;
 FILE *gif_file = NULL;
 
-void gifgen_start(char *filename, uint16_t width, uint16_t height)
+void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *palette)
 {
   gif_file = fopen(filename, "wb+");
 

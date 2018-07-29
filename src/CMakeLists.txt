@@ -4,6 +4,7 @@ add_library(
   gifgen/code_table.c
   gifgen/lzw.c  
   gifgen/gifgen.c
+  gifgen/colour_table.c
 )
 add_executable(automata main.c)
-target_link_libraries(automata automata_lib)
+target_link_libraries(automata automata_lib m)
