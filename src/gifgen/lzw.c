@@ -63,7 +63,19 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t **output, uint16_t length, ui
     if(!code_match)
     {
       add_output_code(next_output_code, code_table.code_bitlength, long_output, &output_position, &output_bit_pos);
-      code_table_add(&code_table, &input_buffer);
+      
+      if(code_table.table_len < MAX_NUM_CODES)
+      {
+        code_table_add(&code_table, &input_buffer);
+      }
+      else
+      {
+        // Output a clear code and reset the code table if we are out of space
+        add_output_code(code_table.cc_index, code_table.code_bitlength, long_output, &output_position, &output_bit_pos);
+        code_table_free(&code_table);
+        code_table_setup(&code_table, num_values);
+      }
+      
       input_buffer.code_len = 0;
       // Last character isn't included in output code, so we need to go over it again
       i--;

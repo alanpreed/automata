@@ -57,13 +57,6 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height)
     uint8_t *output;
     uint16_t output_length = lzw_compress_data(data, &output, width * height, num_colours);
 
-    printf("Final output code stream: ");
-    for(size_t i = 0; i < output_length; i++)
-    {
-      printf("%x, ", output[i]);
-    }
-    printf("\r\n");
-
     // Image descriptor
     fwrite(image_descriptor, sizeof(uint8_t), 10, gif_file);
 
@@ -93,9 +86,6 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height)
       fwrite(&(output[output_position]), sizeof(uint8_t), output_length, gif_file);
       fputc(0x00, gif_file);
     }
-
-    // // Block terminator
-    // fputc(0x00, gif_file);
 
     free(output);
   }

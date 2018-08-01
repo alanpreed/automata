@@ -35,7 +35,7 @@ void code_table_setup(code_table_t *table, uint8_t num_codes)
 
 void code_table_add(code_table_t *table, code_t *code)
 {
-  if(table->table_len < MAX_NUM_CODES - 1)
+  if(table->table_len < MAX_NUM_CODES)
   {
     code_alloc(&(table->data[table->table_len]), code->code_len);
     memcpy(table->data[table->table_len].code, code->code, table->data[table->table_len].code_len);
