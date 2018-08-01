@@ -4,10 +4,12 @@
 #include "lzw.h"
 #include "gifgen.h"
 #include "colour_table.h"
+#include <math.h>
 // http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
 
 static bool started = false;
-FILE *gif_file = NULL;
+static FILE *gif_file = NULL;
+static uint8_t num_colours;
 
 void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *palette, size_t palette_size)
 {
@@ -20,6 +22,7 @@ void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *pal
     uint8_t *global_colour_table;
 
     colour_table_init(palette, palette_size, &table);
+    num_colours = table.size;
     size_t output_size = colour_table_convert(&table, &global_colour_table);
 
     uint8_t logical_screen_desc[7] = { (uint8_t)(width & 0xFF), (uint8_t)(width >> 8),
@@ -52,7 +55,7 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height) //grid_t *
                                     0x00};
 
     uint8_t *output = calloc(100, sizeof(uint8_t));
-    uint16_t output_length = lzw_compress_data(data, output, width * height, 4);
+    uint16_t output_length = lzw_compress_data(data, output, width * height, num_colours);
 
     printf("Final output code stream: ");
     for(size_t i = 0; i < output_length; i++)
@@ -65,7 +68,8 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height) //grid_t *
     fwrite(image_descriptor, sizeof(uint8_t), 10, gif_file);
 
     // LZW minimum code size
-    fputc(0x02, gif_file);
+    uint8_t lzw_min_code_size = log((double)num_colours) / log(2.0);
+    fputc(lzw_min_code_size, gif_file);
 
     // Data block size
     fputc((uint8_t)output_length, gif_file);
