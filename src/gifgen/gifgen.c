@@ -43,7 +43,7 @@ void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *pal
   }
 }
 
-void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height) //grid_t *frame)
+void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height)
 {
   if(started)
   {
@@ -54,8 +54,8 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height) //grid_t *
                                     (uint8_t)(height & 0xFF), (uint8_t)(height >> 8),
                                     0x00};
 
-    uint8_t *output = calloc(100, sizeof(uint8_t));
-    uint16_t output_length = lzw_compress_data(data, output, width * height, num_colours);
+    uint8_t *output;
+    uint16_t output_length = lzw_compress_data(data, &output, width * height, num_colours);
 
     printf("Final output code stream: ");
     for(size_t i = 0; i < output_length; i++)

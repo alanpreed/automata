@@ -35,8 +35,7 @@ uint8_t *output_received;
 
 int setup(void **state)
 {
-  output_received = calloc(LZW_INPUT_SIZE, sizeof(uint8_t));
-  return output_received == NULL;
+  return 0;
 }
 
 int teardown(void **state)
@@ -47,7 +46,7 @@ int teardown(void **state)
 
 void test_lzw(void **state)
 {
-  uint16_t output_length = lzw_compress_data(input_data, output_received, LZW_INPUT_SIZE, NUM_DATA_VALUES);
+  uint16_t output_length = lzw_compress_data(input_data, &output_received, LZW_INPUT_SIZE, NUM_DATA_VALUES);
 
   assert_true(output_length == LZW_OUTPUT_SIZE);
 

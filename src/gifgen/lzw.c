@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lzw.h"
 #include "code_table.h"
 
@@ -10,8 +11,9 @@ static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output,
 
 static void print_bits(uint8_t byte, uint8_t bitlength);
 
-uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uint8_t num_values)
+uint16_t lzw_compress_data(uint8_t *input, uint8_t **output, uint16_t length, uint8_t num_values)
 {
+  uint8_t *long_output = calloc(length, sizeof(uint8_t));
   code_table_t code_table;
   code_t input_buffer;
   uint16_t output_position = 0;
@@ -23,7 +25,7 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
   input_buffer.code_len = 0;
 
   // Start with clear code:
-  add_output_code(code_table.cc_index, code_table.code_bitlength, output, &output_position, &output_bit_pos);
+  add_output_code(code_table.cc_index, code_table.code_bitlength, long_output, &output_position, &output_bit_pos);
 
   for(int i = 0; i < length; i++)
   {
@@ -60,7 +62,7 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
     // If no match found, add to code table and output code for buffer excluding this character
     if(!code_match)
     {
-      add_output_code(next_output_code, code_table.code_bitlength, output, &output_position, &output_bit_pos);
+      add_output_code(next_output_code, code_table.code_bitlength, long_output, &output_position, &output_bit_pos);
       code_table_add(&code_table, &input_buffer);
       input_buffer.code_len = 0;
       // Last character isn't included in output code, so we need to go over it again
@@ -69,18 +71,23 @@ uint16_t lzw_compress_data(uint8_t *input, uint8_t *output, uint16_t length, uin
     // If match was found, return its code if there are no more bytes. Otherwise continue reading
     if(i == length - 1)
     {
-      add_output_code(next_output_code, code_table.code_bitlength, output, &output_position, &output_bit_pos);
+      add_output_code(next_output_code, code_table.code_bitlength, long_output, &output_position, &output_bit_pos);
     }
   }
   // Add end-of-info code when we're out of bytes
-  add_output_code(code_table.eoi_index, code_table.code_bitlength, output, &output_position, &output_bit_pos);
+  add_output_code(code_table.eoi_index, code_table.code_bitlength, long_output, &output_position, &output_bit_pos);
 
   // Include any half-filled bytes in the output
   if(output_bit_pos != 0)
   {
     output_position++;
   }
+
+  *output = calloc(output_position, sizeof(uint8_t));
+  memcpy(*output, long_output, output_position);
+
   code_table_free(&code_table);
+  free(long_output);
   return output_position;
 }
 
