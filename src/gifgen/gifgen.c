@@ -18,20 +18,26 @@ void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *pal
   if(gif_file != NULL)
   {
     char version_header[7] = "GIF89a";
+    fwrite(version_header, sizeof(uint8_t), sizeof(version_header)/sizeof(version_header[0]) - 1, gif_file);
+
     colour_table_t table;
     uint8_t *global_colour_table;
-
     colour_table_init(palette, palette_size, &table);
     num_colours = table.size;
     size_t output_size = colour_table_convert(&table, &global_colour_table);
-
     uint8_t logical_screen_desc[7] = { (uint8_t)(width & 0xFF), (uint8_t)(width >> 8),
                                     (uint8_t)(height & 0xFF), (uint8_t)(height >> 8),
                                     0b10010000 + (table.N & 0b00000111), 0x00, 0x00};
 
-    fwrite(version_header, sizeof(uint8_t), 6, gif_file);
-    fwrite(logical_screen_desc, sizeof(uint8_t), 7, gif_file);
+    fwrite(logical_screen_desc, sizeof(uint8_t), sizeof(logical_screen_desc)/sizeof(logical_screen_desc[0]), gif_file);
     fwrite(global_colour_table, sizeof(uint8_t), output_size, gif_file);
+
+    // Extension block to enable unlimited looping of the gif
+    uint8_t application_extension[19] = { 0x21, 0xFF, 0x0B, 
+                                          'N', 'E', 'T', 'S', 'C', 'A', 'P', 'E', '2', '.', '0',
+                                          0x03, 0x01, 0x00, 0x00, 0x00 };
+
+    fwrite(application_extension,sizeof(uint8_t), sizeof(application_extension) / sizeof(application_extension[0]), gif_file);
 
     colour_table_free(&table);
     free(global_colour_table);
@@ -43,10 +49,17 @@ void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *pal
   }
 }
 
-void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height)
+void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height, uint16_t delay)
 {
   if(started)
   {
+    uint8_t graphic_control_extension[8] = {0x21, 0xF9, 0x04, 0x04, 
+                                            (uint8_t)(delay & 0xFF), (uint8_t)(delay >> 8),
+                                            0x00, 0x00};
+
+    fwrite(graphic_control_extension, sizeof(uint8_t), 
+            sizeof(graphic_control_extension) / sizeof(graphic_control_extension[0]), gif_file);
+
     uint8_t image_descriptor[10] = { 0x2C,
                                     0x00, 0x00,
                                     0x00, 0x00,
@@ -54,11 +67,11 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height)
                                     (uint8_t)(height & 0xFF), (uint8_t)(height >> 8),
                                     0x00};
 
+    // Image descriptor
+    fwrite(image_descriptor, sizeof(uint8_t),  sizeof(image_descriptor) / sizeof(image_descriptor[0]), gif_file);
+
     uint8_t *output;
     uint16_t output_length = lzw_compress_data(data, &output, width * height, num_colours);
-
-    // Image descriptor
-    fwrite(image_descriptor, sizeof(uint8_t), 10, gif_file);
 
     // LZW minimum code size
     uint8_t lzw_min_code_size = log((double)num_colours) / log(2.0);
