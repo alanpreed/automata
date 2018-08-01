@@ -7,8 +7,8 @@
 bool colour_table_init(colour_t *colours, size_t size, colour_table_t *table)
 {
   // Size of colour table encoded in gif is 2^(N+1), where N is the colour table size value
-  size_t N = ceil((log((double)size)/log(2.0)) - 1.0);
-  table->size = pow(2, N+1);
+  table->N = ceil((log((double)size) / log(2.0)) - 1.0);
+  table->size = pow(2, table->N + 1);
 
   table->colours = calloc(table->size, sizeof(colour_t));
 
@@ -25,9 +25,7 @@ bool colour_table_init(colour_t *colours, size_t size, colour_table_t *table)
 
 size_t colour_table_convert(colour_table_t *table, uint8_t **bytes)
 {
-  // Size of colour table encoded in gif is 2^(N+1), where N is the colour table size value
-  size_t N = ceil((log((double)table->size)/log(2.0)) - 1.0);
-  size_t final_table_size = pow(2, N+1);
+  size_t final_table_size = pow(2, table->N + 1);
 
   if(table->size != final_table_size)
   {

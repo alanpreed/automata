@@ -7,6 +7,7 @@
 typedef struct {
   colour_t *colours;
   size_t size;
+  uint8_t N;
 } colour_table_t;
 
 bool colour_table_init(colour_t *colours, size_t size, colour_table_t *table);

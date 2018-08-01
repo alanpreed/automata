@@ -50,17 +50,16 @@ int main(int argc, char *argv[])
                                         2,2,2,2,2,1,1,1,1,1,
                                       };
 
-  #define PALETTE_SIZE 5
+  #define PALETTE_SIZE 4
 
   colour_t *colours = (colour_t[PALETTE_SIZE]) {
-                    (colour_t){0,0,0},
-                    (colour_t){1,1,1},
-                    (colour_t){2,2,2},
-                    (colour_t){3,4,5},
-                    (colour_t){6,7,8},
+                    (colour_t){252, 180, 12},
+                    (colour_t){0xFF, 0x00, 0x00},
+                    (colour_t){0x00, 0x00, 0xFF},
+                    (colour_t){0x00, 0x00, 0x00},
                     };
 
-  gifgen_start(filename, 10, 10, colours);
+  gifgen_start(filename, 10, 10, colours, PALETTE_SIZE);
 
   gifgen_add_frame(input_colour_indices, 10, 10);
 
@@ -68,7 +67,7 @@ int main(int argc, char *argv[])
 
   char filename2[15] = "second.gif";
 
-  gifgen_start(filename2, 5, 5, colours);
+  gifgen_start(filename2, 5, 5, colours, PALETTE_SIZE);
 
   gifgen_add_frame(raw_data, 5, 5);
 

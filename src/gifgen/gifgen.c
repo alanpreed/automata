@@ -3,26 +3,35 @@
 #include <stdlib.h>
 #include "lzw.h"
 #include "gifgen.h"
+#include "colour_table.h"
 // http://www.matthewflickinger.com/lab/whatsinagif/bits_and_bytes.asp
 
 static bool started = false;
 FILE *gif_file = NULL;
 
-void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *palette)
+void gifgen_start(char *filename, uint16_t width, uint16_t height, colour_t *palette, size_t palette_size)
 {
   gif_file = fopen(filename, "wb+");
 
   if(gif_file != NULL)
   {
     char version_header[7] = "GIF89a";
-    char logical_screen_desc[7] = { (uint8_t)(width & 0xFF), (uint8_t)(width >> 8),
+    colour_table_t table;
+    uint8_t *global_colour_table;
+
+    colour_table_init(palette, palette_size, &table);
+    size_t output_size = colour_table_convert(&table, &global_colour_table);
+
+    uint8_t logical_screen_desc[7] = { (uint8_t)(width & 0xFF), (uint8_t)(width >> 8),
                                     (uint8_t)(height & 0xFF), (uint8_t)(height >> 8),
-                                    0b10010001, 0x00, 0x00};
-    char global_colour_table[12] = {0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00};
+                                    0b10010000 + (table.N & 0b00000111), 0x00, 0x00};
 
     fwrite(version_header, sizeof(uint8_t), 6, gif_file);
     fwrite(logical_screen_desc, sizeof(uint8_t), 7, gif_file);
-    fwrite(global_colour_table, sizeof(uint8_t), 12, gif_file);
+    fwrite(global_colour_table, sizeof(uint8_t), output_size, gif_file);
+
+    colour_table_free(&table);
+    free(global_colour_table);
     started = true;
   }
   else
