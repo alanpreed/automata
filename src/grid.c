@@ -40,7 +40,7 @@ void grid_convert(grid_t *grid, uint8_t *raw)
 
 void grid_free(grid_t *grid)
 {
-  for(size_t i = 0; i < grid->height; i++)
+  for(size_t i = 0; i < grid->width; i++)
   {
     free(grid->data[i]);
   }
