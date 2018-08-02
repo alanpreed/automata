@@ -2,7 +2,7 @@
 #include "grid.h"
 #include "gifgen/gifgen.h"
 #include "gifgen/colour.h"
-#include "conway.h"
+#include "model/conway.h"
 
 #define PALETTE_SIZE 3
 
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     uint8_t raw_data[width * height];
     grid_convert(&conway_game, raw_data);
     gifgen_add_frame(raw_data, width, height, delay);
-    conway_step(&conway_game, true);
+    conway_step(&conway_game, false);
   }
 
   gifgen_finish();
