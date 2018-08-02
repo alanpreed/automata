@@ -12,9 +12,9 @@ colour_t *colours = (colour_t[PALETTE_SIZE]) {
                   };
 
 grid_t conway_game;
-size_t width = 5;
-size_t height = 5;
-size_t num_steps = 5;
+size_t width = 300;
+size_t height = 300;
+size_t num_steps = 100;
 uint16_t delay = 10;
 
 int main(int argc, char *argv[])
@@ -25,11 +25,8 @@ int main(int argc, char *argv[])
 
   grid_init(&conway_game, width, height);
 
-  conway_game.data[2][0] = CONWAY_STATE_ALIVE;
-  conway_game.data[2][1] = CONWAY_STATE_ALIVE;
-  conway_game.data[2][2] = CONWAY_STATE_ALIVE;
-  conway_game.data[1][2] = CONWAY_STATE_ALIVE;
-  conway_game.data[0][1] = CONWAY_STATE_ALIVE;
+  //conway_setup_glider(&conway_game);
+  conway_setup_random(&conway_game, 5);
 
   char filename[15] = "conway.gif";
 
@@ -37,6 +34,7 @@ int main(int argc, char *argv[])
   
   for(size_t i = 0; i < num_steps; i++)
   {
+    printf("Frame %zu\r\n", i);
     uint8_t raw_data[width * height];
     grid_convert(&conway_game, raw_data);
     gifgen_add_frame(raw_data, width, height, delay);

@@ -11,7 +11,7 @@ static void add_output_code(uint16_t code, size_t bitlength, uint8_t *output,
 
 static void print_bits(uint8_t byte, uint8_t bitlength);
 
-uint16_t lzw_compress_data(uint8_t *input, uint8_t **output, uint16_t length, uint8_t num_values)
+uint64_t lzw_compress_data(uint8_t *input, uint8_t **output, uint64_t length, uint8_t num_values)
 {
   uint8_t *long_output = calloc(length, sizeof(uint8_t));
   code_table_t code_table;

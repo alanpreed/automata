@@ -31,6 +31,31 @@ void conway_step(grid_t *state)
   *state = new_state;
 }
 
+void conway_setup_glider(grid_t *state)
+{
+  state->data[2][0] = CONWAY_STATE_ALIVE;
+  state->data[2][1] = CONWAY_STATE_ALIVE;
+  state->data[2][2] = CONWAY_STATE_ALIVE;
+  state->data[1][2] = CONWAY_STATE_ALIVE;
+  state->data[0][1] = CONWAY_STATE_ALIVE;
+}
+
+void conway_setup_random(grid_t *state, uint8_t probability)
+{
+  for(size_t j = 0; j < state->height; j++)
+  {
+    for(size_t i = 0; i < state->width; i++)
+    {
+      int generated = rand() % 256;
+
+      if(generated <= probability)
+      {
+        state->data[i][j] = CONWAY_STATE_ALIVE;
+      }
+    }
+  }
+}
+
 static size_t get_grid_value(grid_t *state, int x, int y)
 {
   if (x < 0 || y < 0 || x >= state->width || y >= state->height)

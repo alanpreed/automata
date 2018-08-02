@@ -71,14 +71,14 @@ void gifgen_add_frame(uint8_t *data, uint16_t width, uint16_t height, uint16_t d
     fwrite(image_descriptor, sizeof(uint8_t),  sizeof(image_descriptor) / sizeof(image_descriptor[0]), gif_file);
 
     uint8_t *output;
-    uint16_t output_length = lzw_compress_data(data, &output, width * height, num_colours);
+    uint64_t output_length = lzw_compress_data(data, &output, (uint64_t)width * (uint64_t)height, num_colours);
 
     // LZW minimum code size
     uint8_t lzw_min_code_size = log((double)num_colours) / log(2.0);
     fputc(lzw_min_code_size, gif_file);
 
     // Write out LZW data in subblocks of up to 255 bytes
-    size_t output_position = 0;
+    uint64_t output_position = 0;
 
     while(output_length > 255)
     {

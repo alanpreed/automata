@@ -9,4 +9,7 @@
 
 void conway_step(grid_t *state);
 
+void conway_setup_glider(grid_t *state);
+void conway_setup_random(grid_t *state, uint8_t probability);
+
 #endif
