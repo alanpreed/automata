@@ -10,15 +10,18 @@ colour_t *colours = (colour_t[PALETTE_SIZE]) {
                   (colour_t){0, 0, 0},
                   (colour_t){255, 255, 255},
                   };
+
 grid_t conway_game;
-size_t width = 20;
-size_t height = 20;
-size_t num_steps = 100;
+size_t width = 5;
+size_t height = 5;
+size_t num_steps = 5;
 uint16_t delay = 10;
 
 int main(int argc, char *argv[])
 {
   printf("Cellula Automata\r\n");
+
+  printf("Generating %zu x %zu gif with %zu frames\r\n", width, height, num_steps);
 
   grid_init(&conway_game, width, height);
 
@@ -27,8 +30,6 @@ int main(int argc, char *argv[])
   conway_game.data[2][2] = CONWAY_STATE_ALIVE;
   conway_game.data[1][2] = CONWAY_STATE_ALIVE;
   conway_game.data[0][1] = CONWAY_STATE_ALIVE;
-
-  grid_print(&conway_game);
 
   char filename[15] = "conway.gif";
 
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
     uint8_t raw_data[width * height];
     grid_convert(&conway_game, raw_data);
     gifgen_add_frame(raw_data, width, height, delay);
-    conway_step(&conway_game, false);
+    conway_step(&conway_game);
   }
 
   gifgen_finish();
