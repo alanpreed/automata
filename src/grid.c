@@ -8,7 +8,7 @@ void grid_init(grid_t *grid, size_t width, size_t height)
   grid->height = height;
   grid->data = calloc(grid->width, sizeof(size_t*));
 
-  for(size_t i = 0; i < grid->height; i++)
+  for(size_t i = 0; i < grid->width; i++)
   {
     grid->data[i] = calloc(grid->height, sizeof(size_t));
   }
