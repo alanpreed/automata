@@ -10,7 +10,7 @@ typedef struct {
   size_t **data;
 } grid_t;
 
-void grid_init(grid_t *grid, size_t width, size_t height);
+void grid_init(grid_t **grid, size_t width, size_t height);
 
 void grid_print(grid_t *grid);
 

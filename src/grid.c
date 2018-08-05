@@ -2,15 +2,16 @@
 #include <stdio.h>
 #include "grid.h"
 
-void grid_init(grid_t *grid, size_t width, size_t height)
+void grid_init(grid_t **grid, size_t width, size_t height)
 {
-  grid->width = width;
-  grid->height = height;
-  grid->data = calloc(grid->width, sizeof(size_t*));
+  *grid = calloc(1, sizeof(grid_t));
+  (*grid)->width = width;
+  (*grid)->height = height;
+  (*grid)->data = calloc((*grid)->width, sizeof(size_t*));
 
-  for(size_t i = 0; i < grid->width; i++)
+  for(size_t i = 0; i < (*grid)->width; i++)
   {
-    grid->data[i] = calloc(grid->height, sizeof(size_t));
+    (*grid)->data[i] = calloc((*grid)->height, sizeof(size_t));
   }
 }
 
@@ -45,4 +46,5 @@ void grid_free(grid_t *grid)
     free(grid->data[i]);
   }
   free(grid->data);
+  free(grid);
 }

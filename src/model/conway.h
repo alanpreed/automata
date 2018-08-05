@@ -7,9 +7,11 @@
 #define CONWAY_STATE_ALIVE 1
 #define CONWAY_STATE_DEAD 0
 
-void conway_step(grid_t *state);
+void conway_step(void **state);
 
-void conway_setup_glider(grid_t *state);
-void conway_setup_random(grid_t *state, uint8_t probability);
+bool conway_setup_glider(void **state, int argc, int args[]);
+bool conway_setup_random(void **state, int argc, int args[]);
+void conway_convert(void *state, uint8_t **data);
+void conway_free(void *state);
 
 #endif
