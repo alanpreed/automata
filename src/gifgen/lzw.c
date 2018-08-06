@@ -99,6 +99,7 @@ uint64_t lzw_compress_data(uint8_t *input, uint8_t **output, uint64_t length, ui
   memcpy(*output, long_output, output_position);
 
   code_table_free(&code_table);
+  code_free(&input_buffer);
   free(long_output);
   return output_position;
 }
