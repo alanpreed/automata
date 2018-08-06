@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 static size_t count_neighbours(grid_t *state, int x, int y);
 static size_t get_grid_value(grid_t *state, int x, int y);
@@ -83,6 +84,7 @@ bool conway_setup_random(void **state, int argc, int args[])
     uint8_t probability = args[2];
     grid_init(state_grid, (size_t)width, (size_t)height);
 
+    srand(time(NULL));
     for(size_t j = 0; j < (*state_grid)->height; j++)
     {
       for(size_t i = 0; i < (*state_grid)->width; i++)
