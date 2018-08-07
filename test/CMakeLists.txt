@@ -24,10 +24,17 @@ add_test(test_full_glider_valgrind valgrind
           --suppressions=../../test/valgrind.supp
           --error-exitcode=1 --read-var-info=yes
           --leak-check=full --show-leak-kinds=all
-          ../src/automata test.gif conway-glider 5 100 100 50)
+          ../src/automata test.gif conway-glider 5 1 100 100 50)
           
 add_test(test_full_random_valgrind valgrind
           --suppressions=../../test/valgrind.supp
           --error-exitcode=1 --read-var-info=yes
           --leak-check=full --show-leak-kinds=all
-          ../src/automata test.gif conway-random 5 100 100 50)
+          ../src/automata test.gif conway-random 5 1 100 100 50)
+
+add_test(test_full_glider_scale_valgrind valgrind
+          --suppressions=../../test/valgrind.supp
+          --error-exitcode=1 --read-var-info=yes
+          --leak-check=full --show-leak-kinds=all
+          ../src/automata test.gif conway-glider 5 2 100 100 50)
+  

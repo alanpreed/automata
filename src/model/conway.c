@@ -101,11 +101,11 @@ bool conway_setup_random(void **state, int argc, int args[])
   }
 }
 
-void conway_convert(void *state, uint8_t **data)
+void conway_convert(void *state, uint8_t **data, size_t scale)
 {
   grid_t *state_grid = (grid_t*)state;
-  *data = calloc(state_grid->width * state_grid->height, sizeof(uint8_t));
-  grid_convert(state_grid, *data);
+  *data = calloc(state_grid->width * scale * state_grid->height * scale, sizeof(uint8_t));
+  grid_convert(state_grid, *data, scale);
 }
 
 void conway_free(void *state)

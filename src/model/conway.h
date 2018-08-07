@@ -11,7 +11,7 @@ void conway_step(void **state);
 
 bool conway_setup_glider(void **state, int argc, int args[]);
 bool conway_setup_random(void **state, int argc, int args[]);
-void conway_convert(void *state, uint8_t **data);
+void conway_convert(void *state, uint8_t **data, size_t scale);
 void conway_free(void *state);
 
 #endif

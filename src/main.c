@@ -35,14 +35,14 @@ int main(int argc, char *argv[])
     exit(0);
   }
   
-  gifgen_start(inputs.filename, inputs.width, inputs.height, colours, PALETTE_SIZE);
+  gifgen_start(inputs.filename, inputs.width * inputs.scale, inputs.height * inputs.scale, colours, PALETTE_SIZE);
   
   for(size_t i = 0; i < inputs.num_steps; i++)
   {
     printf("Frame %zu\r\n", i);
     uint8_t *raw_data;
-    model_convert(&raw_data);
-    gifgen_add_frame(raw_data, inputs.width, inputs.height, delay);
+    model_convert(&raw_data, inputs.scale);
+    gifgen_add_frame(raw_data, inputs.width * inputs.scale, inputs.height * inputs.scale, delay);
     free(raw_data);
     model_step();
   }

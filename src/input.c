@@ -7,10 +7,10 @@ static size_t str_to_num(char *argument);
 
 bool input_parse(int argc, char *argv[], input_arguments_t *output)
 {
-  if(argc < 6)
+  if(argc < 7)
   {
     printf("Insufficient arguments. Usage:\r\n");
-    printf("automata <filename> <model> <number of frames> <grid width> <grid height> <model specific options>\r\n");
+    printf("automata <filename> <model> <number of frames> <scale> <grid width> <grid height>  <model specific options>\r\n");
     return false;
   }
 
@@ -35,13 +35,14 @@ bool input_parse(int argc, char *argv[], input_arguments_t *output)
   }
 
   output->num_steps = str_to_num(argv[3]);
-  output->width = str_to_num(argv[4]);
-  output->height = str_to_num(argv[5]);
-  output->num_model_args = argc - 4;
+  output->scale = str_to_num(argv[4]);
+  output->width = str_to_num(argv[5]);
+  output->height = str_to_num(argv[6]);
 
+  output->num_model_args = argc - 5;
   for(size_t i = 0; i < output->num_model_args; i++)
   {
-    output->model_args[i] = str_to_num(argv[4 + i]);
+    output->model_args[i] = str_to_num(argv[5 + i]);
   }
 
   return true;

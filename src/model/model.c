@@ -78,11 +78,11 @@ void model_step(void)
   }
 }
 
-void model_convert(uint8_t **data)
+void model_convert(uint8_t **data, size_t scale)
 {
   if(model_valid)
   {
-    model_convert_fns[model_index](model_state, data);
+    model_convert_fns[model_index](model_state, data, scale);
   }
 }
 

@@ -10,9 +10,10 @@
 typedef struct{
   char filename[INPUT_MAX_STRING_LEN];
   char model[INPUT_MAX_STRING_LEN];
+  size_t num_steps;
   size_t width;
   size_t height;
-  size_t num_steps;
+  size_t scale;
   int num_model_args;
   int model_args[INPUT_MAX_ARGS];
 } input_arguments_t;
